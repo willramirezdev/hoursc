@@ -5,7 +5,7 @@ using System.Text;
 namespace Hours.Core
 {
     /// <summary>
-    /// Base class for declared entities.
+    /// A base class for entities.
     /// </summary>
     /// <remarks>
     /// See http://enterprisecraftsmanship.com/2014/11/08/domain-object-base-class/
@@ -37,6 +37,14 @@ namespace Hours.Core
             }
 
             return false;
+        }
+
+        public override int GetHashCode()
+        {
+            unchecked
+            {
+                return 2108858624 + Id.GetHashCode();
+            }
         }
 
         public virtual bool IsTransient()

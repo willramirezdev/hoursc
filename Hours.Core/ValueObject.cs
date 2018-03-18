@@ -12,6 +12,10 @@ namespace Hours.Core
     /// </remarks>
     public abstract class ValueObject
     {
+        /// <summary>
+        /// Gets the properties used to determine if two value objects are equal.
+        /// </summary>
+        /// <returns></returns>
         protected abstract IEnumerable<object> GetEqualityComponents();
 
         public override bool Equals(object obj)
@@ -23,7 +27,7 @@ namespace Hours.Core
 
             if(this.GetType() != obj.GetType())
             {
-                throw new ArgumentException($"Invalid comparison of Value Objects of different types: {GetType()} and {obj.GetType()}");
+                throw new ArgumentException($"Invalid comparison of Value Objects of different types: {this.GetType()} and {obj.GetType()}");
             }
 
             var valueObject = (ValueObject)obj;
@@ -59,7 +63,7 @@ namespace Hours.Core
                 {
                     unchecked
                     {
-                    return current * 23 + (obj?.GetHashCode() ?? 0);
+                        return current * 23 + (obj?.GetHashCode() ?? 0);
                     }
                 });
         }
