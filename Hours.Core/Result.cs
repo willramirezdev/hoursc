@@ -39,6 +39,33 @@ namespace Hours.Core
         public IReadOnlyCollection<string> ErrorMessages => this.errorMessages;
 
         /// <summary>
+        /// Creates a error result with error messages.
+        /// </summary>
+        /// <returns></returns>
+        public static Result CreateError(string errorMessage)
+        {
+            return new Result(false, new List<string> { errorMessage });
+        }
+
+        /// <summary>
+        /// Creates a error result with error messages.
+        /// </summary>
+        /// <returns></returns>
+        public static Result CreateError(List<string> errorMessages)
+        {
+            return new Result(false, errorMessages);
+        }
+
+        /// <summary>
+        /// Creates a successful result with a return value.
+        /// </summary>
+        /// <returns></returns>
+        public static Result Create()
+        {
+            return new Result(true);
+        }
+
+        /// <summary>
         /// Combines multiple results together. If any results have failed,
         /// then the new Result will be a failure.
         /// </summary>
@@ -83,9 +110,20 @@ namespace Hours.Core
         /// </summary>
         /// <param name="errorMessages"></param>
         /// <returns></returns>
-        public static Result<T> CreateError(List<string> errorMessages)
+        public new static Result<T> CreateError(List<string> errorMessages)
         {
+            //TODO: fix method hiding
             return new Result<T>(false, default(T), errorMessages);
+        }
+
+        /// <summary>
+        /// Creates a error result with error messages.
+        /// </summary>
+        /// <param name="errorMessages"></param>
+        /// <returns></returns>
+        public static Result<T> CreateError(IReadOnlyCollection<string> errorMessages)
+        {
+            return CreateError(errorMessages.ToList());
         }
 
         /// <summary>

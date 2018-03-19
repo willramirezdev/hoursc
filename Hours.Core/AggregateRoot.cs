@@ -29,9 +29,38 @@ namespace Hours.Core
         /// </summary>
         public bool NeedsPersistence { get; protected set; }
 
-        private void HasChanges()
+        /// <summary>
+        /// Marks the aggre
+        /// </summary>
+        protected void HasChanges()
         {
-            this.NeedsPersistence = true;
+            if(!this.NeedsPersistence)
+            {
+                this.NeedsPersistence = true;
+                this.AggregateVersion++;
+            }           
+        }
+
+        /// <summary>
+        /// C# event which is called when a DomainEvent occurs in the aggregate.
+        /// </summary>
+        public event EventHandler<DomainEvent> RaiseDomainEvent;
+
+        /// <summary>
+        /// Raises a domain event if it's been subscribed to.
+        /// </summary>
+        /// <param name="domainEvent"></param>
+        protected virtual void OnRaiseDomainEvent(DomainEvent domainEvent)
+        {
+            // make a copy of the handle to help with race conditions
+            // see 
+            // https://docs.microsoft.com/en-us/dotnet/csharp/programming-guide/events/how-to-publish-events-that-conform-to-net-framework-guidelines
+            var handler = this.RaiseDomainEvent;
+
+            if(handler != null)
+            {
+                handler(this, domainEvent);
+            }
         }
     }
 }

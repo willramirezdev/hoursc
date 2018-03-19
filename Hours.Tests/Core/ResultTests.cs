@@ -5,7 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace Hours.Tests.Unit
+namespace Hours.Tests.Core.Unit
 {   
     [TestClass]
     [TestCategory("Unit")]

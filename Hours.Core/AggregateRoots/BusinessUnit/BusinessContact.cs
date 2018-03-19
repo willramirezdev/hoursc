@@ -5,6 +5,9 @@ using System.Text;
 
 namespace Hours.Core.AggregateRoots.BusinessUnit
 {
+    /// <summary>
+    /// Represents the Business Contacts for a Business Unit.
+    /// </summary>
     public class BusinessContact : ValueObject
     {
         private BusinessContact(string name, string phone, string email)
@@ -14,13 +17,26 @@ namespace Hours.Core.AggregateRoots.BusinessUnit
             this.Email = email;
         }
 
-        public static BusinessContact Create(string name, string phone, string email)
+        /// <summary>
+        /// Creates an instance of the Business Contact.
+        /// </summary>
+        /// <param name="name"></param>
+        /// <param name="phone"></param>
+        /// <param name="email"></param>
+        /// <returns>BusinessContact or error</returns>
+        public static Result<BusinessContact> Create(string name, string phone, string email)
         {
-            ValidationHelper.ValidateStringLengthAndNullOrEmpty(name, nameof(name), 50);
-            ValidationHelper.ValidateStringLengthAndNullOrEmpty(phone, nameof(phone), 50);
-            ValidationHelper.ValidateEmail(email);
+            var validationResult = Result.Combine(
+                ValidationHelper.ValidateStringLengthAndNullOrEmpty(name, nameof(name), 50),
+                ValidationHelper.ValidateStringLengthAndNullOrEmpty(phone, nameof(phone), 25),
+                ValidationHelper.ValidateEmail(email));
 
-            return new BusinessContact(name, phone, email);
+            if(validationResult.IsFailure)
+            {
+                return Result<BusinessContact>.CreateError(validationResult.ErrorMessages);
+            }
+
+            return Result<BusinessContact>.Create(new BusinessContact(name, phone, email));
         }
 
         public string Name { get; private set; }
