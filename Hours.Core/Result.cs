@@ -6,11 +6,16 @@ using System.Linq;
 namespace Hours.Core
 {
     /// <summary>
-    /// Used to capture the the result of whether or not an operation has succedded
+    /// Used to capture the the result of whether or not an operation has succeeded.
     /// </summary>
     /// <typeparam name="T"></typeparam>
     public class Result 
     {
+        /// <summary>
+        /// Constructor
+        /// </summary>
+        /// <param name="isSuccess"></param>
+        /// <param name="errorMessages"></param>
         public Result(bool isSuccess, List<string> errorMessages = null)
         {
             this.errorMessages = errorMessages ?? new List<string>();
@@ -49,25 +54,63 @@ namespace Hours.Core
         }
      }
 
-
+    /// <summary>
+    /// Used to capture the the result and return value of whether 
+    /// or not an operation has succeeded.  
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
     public class Result<T> : Result
-    {       
-        public Result(bool isSuccess, T returnResult, List<string> errorMessages = null) 
+    {    
+        /// <summary>
+        /// Constructor
+        /// </summary>
+        /// <param name="isSuccess"></param>
+        /// <param name="returnValue"></param>
+        /// <param name="errorMessages"></param>
+        public Result(bool isSuccess, T returnValue, List<string> errorMessages = null) 
             : base(isSuccess, errorMessages)
         {
-            this.ReturnResult = returnResult;
+            this.ReturnValue = returnValue;
         }
 
-        public T ReturnResult { get; private set; }
+        /// <summary>
+        /// Gets the return value of the result.
+        /// </summary>
+        public T ReturnValue { get; private set; }
 
+        /// <summary>
+        /// Creates a error result with error messages.
+        /// </summary>
+        /// <param name="errorMessages"></param>
+        /// <returns></returns>
         public static Result<T> CreateError(List<string> errorMessages)
         {
-            return new Result<T>(true, default(T), errorMessages);
+            return new Result<T>(false, default(T), errorMessages);
         }
 
-        public static Result<T> Create(T returnResult)
+        /// <summary>
+        /// Creates a successful result with a return value.
+        /// </summary>
+        /// <param name="returnValue"></param>
+        /// <returns></returns>
+        public static Result<T> Create(T returnValue)
         {
-            return new Result<T>(false, returnResult);
-        }        
+            return new Result<T>(true, returnValue);
+        }
+
+        /// <summary>
+        /// Combines multiple results together. If any results have failed,
+        /// then the new Result will be a failure.
+        /// </summary>
+        /// <param name="results"></param>
+        /// <returns></returns>
+        public static Result<List<T>> Combine(params Result<T>[] results)
+        {
+            bool isSuccess = results.All(x => x.IsSuccess);
+            List<string> errorMessages = results.SelectMany(x => x.ErrorMessages).ToList();
+            var returnResults = results.Select(x => x.ReturnValue).ToList();
+
+            return new Result<List<T>>(isSuccess, returnResults, errorMessages);
+        }
     }
 }

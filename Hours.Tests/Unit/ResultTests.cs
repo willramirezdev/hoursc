@@ -52,7 +52,7 @@ namespace Hours.Tests.Unit
         }
 
         [TestMethod]
-        public void Combine_Aggregates_ErrorMessages()
+        public void Combine_AggregatesErrorMessages()
         {
             var error1 = Guid.NewGuid().ToString();
             var result1 = new Result(false, new List<string> { error1 });
