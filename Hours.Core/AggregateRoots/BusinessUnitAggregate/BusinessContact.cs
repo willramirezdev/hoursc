@@ -3,13 +3,19 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace Hours.Core.AggregateRoots.BusinessUnit
+namespace Hours.Core.AggregateRoots.BusinessUnitAggregate
 {
     /// <summary>
     /// Represents the Business Contacts for a Business Unit.
     /// </summary>
     public class BusinessContact : ValueObject
     {
+        /// <summary>
+        /// Private constructor.
+        /// </summary>
+        /// <param name="name"></param>
+        /// <param name="phone"></param>
+        /// <param name="email"></param>
         private BusinessContact(string name, string phone, string email)
         {
             this.Name = name;
@@ -39,10 +45,19 @@ namespace Hours.Core.AggregateRoots.BusinessUnit
             return Result<BusinessContact>.Create(new BusinessContact(name, phone, email));
         }
 
+        /// <summary>
+        /// Gets the business contact name.
+        /// </summary>
         public string Name { get; private set; }
 
+        /// <summary>
+        /// Gets the business contact phone number.
+        /// </summary>
         public string Phone { get; private set; }
 
+        /// <summary>
+        /// Gets the business contact email address.
+        /// </summary>
         public string Email { get; private set; }
 
         protected override IEnumerable<object> GetEqualityComponents()

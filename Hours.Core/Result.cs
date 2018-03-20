@@ -7,8 +7,7 @@ namespace Hours.Core
 {
     /// <summary>
     /// Used to capture the the result of whether or not an operation has succeeded.
-    /// </summary>
-    /// <typeparam name="T"></typeparam>
+    /// </summary>    
     public class Result 
     {
         /// <summary>

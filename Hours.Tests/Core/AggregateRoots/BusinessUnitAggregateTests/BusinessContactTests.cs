@@ -1,10 +1,10 @@
-﻿using Hours.Core.AggregateRoots.BusinessUnit;
+﻿using Hours.Core.AggregateRoots.BusinessUnitAggregate;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace Hours.Tests.Core.AggregateRoots.BusinessUnit
+namespace Hours.Tests.Core.AggregateRoots.BusinessUnitAggregateTests
 {
     [TestClass]
     [TestCategory("Unit")]

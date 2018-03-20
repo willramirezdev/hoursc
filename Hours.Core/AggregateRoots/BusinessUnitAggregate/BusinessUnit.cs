@@ -3,7 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace Hours.Core.AggregateRoots.BusinessUnit
+namespace Hours.Core.AggregateRoots.BusinessUnitAggregate
 {
     /// <summary>
     /// Holds the details of a business unit.
@@ -14,23 +14,36 @@ namespace Hours.Core.AggregateRoots.BusinessUnit
             string name,
             string department,
             string description,
-            IEnumerable<BusinessContact> businessContacts,
+            List<BusinessContact> businessContacts,
             int aggregateVersion = 0)
         {
             this.Name = name;
-            this.Department = department;
-            this.Description = description;
-            this.businessContacts = businessContacts.ToList();
-            this.AggregateVersion = 0; 
+            this.Department = department ?? string.Empty;
+            this.Description = description ?? string.Empty;
+            
+            this.businessContacts = businessContacts ?? new List<BusinessContact>();
+            this.AggregateVersion = aggregateVersion; 
         }
 
+        /// <summary>
+        /// Gets the business unit name.
+        /// </summary>
         public string Name { get; protected set; }
 
+        /// <summary>
+        /// Gets the business unit department.
+        /// </summary>
         public string Department { get; protected set; }
 
+        /// <summary>
+        /// Gets the business unit description.
+        /// </summary>
         public string Description { get; protected set; }
 
         private List<BusinessContact> businessContacts;
+        /// <summary>
+        /// Gets the list of business contacts.
+        /// </summary>
         public IReadOnlyCollection<BusinessContact> BusinessContacts => this.businessContacts;
 
         /// <summary>
@@ -49,7 +62,7 @@ namespace Hours.Core.AggregateRoots.BusinessUnit
             List<BusinessContact> businessContacts = null,
             int aggregateVersion = 0)
         {
-            var result = ValidateTextFields(name, department, description);              
+            var result = ValidateName(name);
 
             if(businessContacts?.Count > 3)
             {
@@ -62,18 +75,19 @@ namespace Hours.Core.AggregateRoots.BusinessUnit
             if (result.IsFailure)
             {
                 return Result<BusinessUnit>.CreateError(result.ErrorMessages);
-            }
+            }            
 
             return Result<BusinessUnit>.Create(new BusinessUnit(name, department, description, businessContacts, aggregateVersion));
         }
 
-        private static Result ValidateTextFields(string name, string department, string description)
+        /// <summary>
+        /// Validates the name of the business unit.
+        /// </summary>
+        /// <param name="name"></param>
+        /// <returns></returns>
+        private static Result ValidateName(string name)
         {
-            return Result.Combine(
-                    ValidationHelper.ValidateStringLengthAndNullOrEmpty(name, nameof(name), 50),
-                    ValidationHelper.ValidateStringLengthAndNullOrEmpty(department, nameof(department), 100),
-                    ValidationHelper.ValidateStringLengthAndNullOrEmpty(description, nameof(description), 100)
-                    );
+            return ValidationHelper.ValidateStringLengthAndNullOrEmpty(name, nameof(name), 50);
         }
 
         /// <summary>
@@ -85,11 +99,16 @@ namespace Hours.Core.AggregateRoots.BusinessUnit
         /// <returns></returns>
         public Result UpdateTextFields(string name, string department, string description)
         {
-            var result = ValidateTextFields(name, department, description);
+            var result = ValidateName(name);
+
+            if(result.IsFailure)
+            {
+                return result;
+            }
 
             this.Name = name;
-            this.Department = department;
-            this.Description = description;
+            this.Department = department ?? string.Empty;
+            this.Description = description ?? string.Empty;
 
             this.HasChanges();
 
